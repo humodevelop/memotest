@@ -1,6 +1,7 @@
 body{
     margin: 0;
     background-color:mediumslateblue;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 #main{
@@ -40,14 +41,49 @@ body{
     position: absolute;
     background-color: tomato;
     cursor: pointer;
+    animation-duration: .5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
-.memotest-card-discover{
-    background-color: rgba(0, 0, 0, 0);
-    transition: background-color .5s;
+.memotest-card-top:hover{
+    transform: scale(1.1, 1.1);
+    transition: transform .3s;
 }
 
-.memotest-card-cover{
-    background-color: rgb(0, 0, 0);
-    transition: background-color .5s;
+.start-game-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 40px;
+    background-color: aquamarine;
+    border-radius: 4px;
+    padding: 0px 8px;
+    color: tomato;
+    font-weight: bold;
+    margin: 2px auto;
+}
+
+.start-game-button:hover{
+    color: aquamarine;
+    background-color: tomato;
+    cursor: pointer;
+}
+
+.description{
+    color: white;
+    width: 300px;
+    margin: 4px auto;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from {background-color: rgba(0, 0, 0, 0);}
+    to {background-color: tomato;}
+}
+
+@keyframes fadeOut{
+    from {background-color: tomato;}
+    to {background-color: rgba(0, 0, 0, 0);}
 }

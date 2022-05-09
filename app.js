@@ -1,12 +1,28 @@
 const emojis = ["🐶","🐱","🐰","🐻","🐯","🐮","🐷","🐵","🐴","🐸","🦒","🦊"]; //Lista de emojis
 const grid = document.querySelector(".memotest-grid"); //grid contenedor
+const startGameButton = document.querySelector(".start-game-button");
+
+startGameButton.onclick = StartGame;
+
+var firstCard = null;
+var secondCard = null;
+/*
+    Aca se almacenan las 2 primeras cartas clickeadas.
+    Cada una va a contener un objeto del tipo {emoji: "caracter" card: "elemento del DOM"}
+    Propiedades del objeto:
+    -emoji: se utiliza para comparar las cartas.
+    -card: se utiliza para modificar el elemento del DOM por JavaScript.
+*/
 
 
-console.log(emojis);
-console.log(GetRandomArray(emojis));
-console.log(GetRandomArrayBySize(emojis, 5));
+//CreateGrid();
 
-CreateGrid();
+
+function StartGame(){
+    firstCard = secondCard = null;
+    CreateGrid();
+}
+
 
 function CreateGrid(){
     grid.innerHTML ="";
@@ -18,15 +34,50 @@ function CreateGrid(){
         for(let j = 0; j < unsortedArray.length; j++){
             grid.innerHTML += `
             <div class="memotest-card">${array[j]}
-                <div onclick="Jeje(this)" class="memotest-card memotest-card-top"></div>
+                <div onclick="OnClickCard(this, '${array[j]}')" class="memotest-card memotest-card-top"></div>
             </div>
             `;
         }
     }
 }
 
-function Jeje(element){
-    element.classList.add("memotest-card-discover")
+function OnClickCard(element, emoji){
+    if(firstCard == null){
+        //Primer carta clickeada
+        firstCard = GetCard(emoji, element); //Guardar la primer carta
+        firstCard.card.style.animationName = "fadeOut"; //Hacer que se vea ocultando el div que tiene encima
+    }
+    else{
+        if(secondCard == null){
+            //Segunda carta clickeada
+            secondCard = GetCard(emoji, element); //Guardar la segunda carta
+            secondCard.card.style.animationName = "fadeOut"; //Hacer que se vea ocultando el div que tiene encima
+            if(firstCard.emoji == secondCard.emoji){
+                //Cartas correctas
+                //Desactivar el evento onclick porque estas cartas fueron correctas
+                firstCard.card.onclick = null;
+                secondCard.card.onclick = null;
+                firstCard = secondCard = null;
+                //Establecer la cartas como nulas para que esta funcion pueda ser llamada
+            }
+            else{
+                //Cartas incorrectas
+                //Determinar un tiempo para ocultar las cartas
+                setTimeout(HideActiveCards, 1000);
+            }
+        }
+    }
+}
+
+function HideActiveCards(){
+    firstCard.card.style.animationName = "fadeIn";
+    secondCard.card.style.animationName = "fadeIn";
+    firstCard = secondCard = null;
+}
+
+function GetCard(emoji, element){
+    let card = {emoji: emoji, card: element};
+    return card;
 }
 
 function GetRandomArrayBySize(array, size){
