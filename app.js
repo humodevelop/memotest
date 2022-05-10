@@ -1,11 +1,16 @@
 const emojis = ["🐶","🐱","🐰","🐻","🐯","🐮","🐷","🐵","🐴","🐸","🦒","🦊"]; //Lista de emojis
 const grid = document.querySelector(".memotest-grid"); //grid contenedor
 const startGameButton = document.querySelector(".start-game-button");
+const restartGameButton = document.querySelector(".restart-button");
+const modal = document.querySelector("#modal");
 
 startGameButton.onclick = StartGame;
+restartGameButton.onclick = RestartGame;
 
 var firstCard = null;
 var secondCard = null;
+var cardsLeft = 10; //Cartas restantes para ganar
+var attemptCount = 0; //Contador de clicks
 /*
     Aca se almacenan las 2 primeras cartas clickeadas.
     Cada una va a contener un objeto del tipo {emoji: "caracter" card: "elemento del DOM"}
@@ -15,12 +20,21 @@ var secondCard = null;
 */
 
 
-//CreateGrid();
-
-
 function StartGame(){
     firstCard = secondCard = null;
+    cardsLeft = 10;
+    attemptCount = 0;
     CreateGrid();
+}
+
+function RestartGame(){
+    modal.style.display = "none";
+    StartGame();
+}
+
+function ShowModal(){
+    modal.querySelector("#attempt-counter").textContent ="Cantidad de intentos: " + attemptCount;
+    modal.style.display = "flex";
 }
 
 
@@ -48,6 +62,7 @@ function OnClickCard(element, emoji){
         firstCard.card.style.animationName = "fadeOut"; //Hacer que se vea ocultando el div que tiene encima
     }
     else{
+        if(firstCard.card == element) return; //Esto se comprueba porque capaz el usuario hace click en una carta descubierta y se podria establecer como segunda carta clickeada. Se buguea todo.
         if(secondCard == null){
             //Segunda carta clickeada
             secondCard = GetCard(emoji, element); //Guardar la segunda carta
@@ -59,13 +74,23 @@ function OnClickCard(element, emoji){
                 secondCard.card.onclick = null;
                 firstCard = secondCard = null;
                 //Establecer la cartas como nulas para que esta funcion pueda ser llamada
+                cardsLeft--;
+                CheckForWin();
             }
             else{
                 //Cartas incorrectas
                 //Determinar un tiempo para ocultar las cartas
                 setTimeout(HideActiveCards, 1000);
+                attemptCount++; //Sumar 1 a la cantidad de intentos.
             }
         }
+    }
+}
+
+
+function CheckForWin(){
+    if(cardsLeft ==0){
+        ShowModal();
     }
 }
 
